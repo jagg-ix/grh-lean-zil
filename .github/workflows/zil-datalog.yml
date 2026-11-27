@@ -8,6 +8,7 @@ on:
       - "grh-compact/lean-toolchain"
       - "grh-compact/src/Zil.lean"
       - "grh-compact/src/Zil/Datalog/**"
+      - "grh-compact/src/Zil/Test/**"
   push:
     branches: ["main"]
     paths:
@@ -16,6 +17,7 @@ on:
       - "grh-compact/lean-toolchain"
       - "grh-compact/src/Zil.lean"
       - "grh-compact/src/Zil/Datalog/**"
+      - "grh-compact/src/Zil/Test/**"
   workflow_dispatch:
 
 jobs:
@@ -27,7 +29,7 @@ jobs:
         with:
           lake-package-directory: grh-compact
           build: false
-          use-mathlib-cache: false
-      - name: Build vendored ZIL modules and upstream checked-evaluation tests
+          use-mathlib-cache: true
+      - name: Build upstream ZIL Datalog DSL and regression suite
         working-directory: grh-compact
         run: lake build Zil ZilSmoke
