@@ -31,14 +31,13 @@ roots = ["Statements", "Main"]
 name = "Challenge"
 srcDir = ".."
 
-# Upstream ZIL Datalog modules, vendored verbatim at the commit documented in
-# ZIL-INTEGRATION.md. The upstream package's Lean 4.31 pin differs from GRH's
-# Lean 4.35 pin, so this source-only subset avoids a nested toolchain conflict.
+# ZIL's proof-oriented Datalog DSL, vendored from the pinned source revision.
+# Upstream currently pins Lean 4.31.0; this GRH project remains on Lean 4.35.0.
 [[lean_lib]]
 name = "Zil"
 roots = ["Zil"]
 
-# Compile an executable API smoke test as part of the default target set.
+# Compile upstream DSL, checked-evaluation, certificate and perfect-model tests.
 [[lean_lib]]
 name = "ZilSmoke"
-roots = ["Zil.Datalog.Smoke"]
+roots = ["Zil.Test.DatalogSuite"]
