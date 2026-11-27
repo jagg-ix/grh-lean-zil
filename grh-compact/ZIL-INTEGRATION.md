@@ -36,6 +36,16 @@ local semantics. The `Zil.Native` application engine, external `.zc` parser,
 CLI, worker, persistence/network services, and `Zil.Horn` subsystem remain
 outside this integration.
 
+## GRH declaration bridge
+
+`src/Zil/Test/GRHBridge.lean` imports the five established GRH declarations
+from `Main.lean`, assigns stable ZIL claim/concept identifiers, and attaches
+the theorem/type relations with `zil attach`. It checks that the environment
+retains ten attachment facts and that `zil_apply` resolves the Riemann
+Hypothesis claim to the original Lean theorem. These are traceability and
+lookup checks only; they do not prove the encoding sound or complete and do
+not add a proof of RH or GRH.
+
 ## Build and upstream regression tests
 
 From `grh-compact/`:
@@ -52,11 +62,13 @@ lake build Zil ZilSmoke
 - `DatalogMacro`: expansion of the `zil_macro` and `zil_use` DSL commands.
 - `DatalogCertify`: positive and negative certificate cases and proof checks.
 - `DatalogPerfect`: ground matching and stable-model semantics.
+- `GRHBridge`: the five theorem declarations, their ZIL metadata/relations,
+  and claim-based application with `zil_apply`.
 
 The workflow `.github/workflows/zil-datalog.yml` builds these targets using
-the GRH toolchain. A passing build has not yet been observed; GitHub's first
-job attempt terminated before runner steps executed, so that result is not a
-Lean compilation result.
+the GRH toolchain. A passing build has not yet been observed; GitHub's
+workflow jobs have terminated before runner steps executed, so those runs
+are not Lean compilation results.
 
 ## Updating and trust boundary
 

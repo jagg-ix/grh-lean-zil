@@ -3,10 +3,6 @@ import Zil.Test.DatalogChecked
 import Zil.Test.DatalogMacro
 import Zil.Test.DatalogCertify
 import Zil.Test.DatalogPerfect
+import Zil.Test.GRHBridge
 
-/-!
-# Upstream ZIL Datalog regression suite
-
-These tests are copied from the pinned ZIL source revision and compiled against
-the GRH project's Lean/Mathlib toolchain.
--/
+/-! Upstream ZIL Datalog tests and the GRH declaration-attachment example. -/
