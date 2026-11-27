@@ -30,3 +30,7 @@ roots = ["Statements", "Main"]
 [[lean_lib]]
 name = "Challenge"
 srcDir = ".."
+
+# ZIL integration is intentionally a separate future Lake package/overlay:
+# upstream ZIL pins Lean 4.31.0, while this GRH project pins Lean 4.35.0.
+# See ZIL-INTEGRATION.md for the compatibility boundary and pinned revision.
