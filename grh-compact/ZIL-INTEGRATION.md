@@ -1,53 +1,56 @@
-# ZIL integration plan
+# ZIL integration
 
-This GRH project and [ZIL](https://github.com/jagg-ix/zil-lean) use different
-Lean toolchains at their current upstream revisions:
+The compact GRH Lake project now includes the proof-oriented Datalog modules
+from [jagg-ix/zil-lean](https://github.com/jagg-ix/zil-lean).
 
-- GRH compact: Lean 4.35.0; Mathlib commit
-  `56a005855ea17e0b0958f73ec801ae140b0a1679`.
-- ZIL: Lean 4.31.0; upstream package `«zil-lean»`.
+## Source and compatibility
 
-A direct Lake `require` would therefore combine projects with incompatible
-toolchain pins. Do not change the GRH toolchain or Mathlib pin to work around
-this mismatch: the GRH files have been checked against their current setup.
+The source is pinned to ZIL commit
+7de6db8b6ce5f5c83667a3a93e05bc80649e4a06. The files under src/Zil/Datalog are copied verbatim from
+that revision; their upstream module names and imports are preserved.
 
-## ZIL library surface
+The GRH compact project pins Lean 4.35.0 and Mathlib commit
+56a005855ea17e0b0958f73ec801ae140b0a1679. The ZIL repository's
+lean-toolchain at the pinned source revision says Lean 4.31.0. To keep the
+GRH build pinned, this integration vendors only the selected source modules
+instead of declaring an upstream Lake dependency. No Lean or Mathlib pin in
+the GRH project has been changed.
 
-The useful Lean-level integration boundary is the ZIL Datalog layer:
-`Zil.Datalog.Basic`, `Unify`, `Eval`, `Semantics`, `Model`,
-`LeastModel`, `Stratified`, `Checked`, `Certify`, `Matching`,
-`Perfect`, and `Tactic.Solve`. It provides ground atoms, rule programs,
-unification, executable evaluation, derivation/model semantics, stratification,
-checked evaluation, certificate checking, and tactics.
+The selected modules cover the ZIL Datalog ground model, unification, evaluation,
+derivation semantics, model theory, least-model reasoning, stratification,
+checked evaluation, proof certificates, matching correctness, perfect-model
+results, and the zil_solve / zil_refute tactics. The local src/Zil.lean
+file is a curated import root for this subset; it is not a copy of the full
+upstream Zil.lean root.
 
-The upstream root `Zil.lean` additionally imports a broader surface and the
-native project is much larger. GRH should initially consume the proof-oriented
-Datalog modules only, not the CLI, worker, persistence, networking, or runtime.
+This does not bring in ZIL's native knowledge/application stack, external
+.zc parser, CLI, worker, persistence, networking, or runtime services.
+Those components remain outside the integration boundary.
 
-## Pinned upstream revision
+## Build and smoke test
 
-The current ZIL source revision inspected for this integration is:
+From grh-compact/:
 
-`7de6db8b6ce5f5c83667a3a93e05bc80649e4a06`
+```sh
+lake build Zil ZilSmoke
+lake env lean src/Zil/Datalog/Smoke.lean
+```
 
-Source: https://github.com/jagg-ix/zil-lean/tree/7de6db8b6ce5f5c83667a3a93e05bc80649e4a06
+The smoke test checks a ground fact, the checked evaluator's positive answer,
+and the zil_solve tactic against a fact program.
 
-## Recommended integration sequence
+## Updating
 
-1. Add a Lean 4.35-compatible revision/toolchain to ZIL upstream (or publish a
-   compatibility branch) and verify its Datalog targets against the GRH
-   Mathlib revision.
-2. Add that compatible ZIL revision as a Lake dependency in `grh-compact`.
-3. Import only the required Datalog modules through a local `GRH.ZIL` facade.
-4. Add smoke tests that encode GRH proof metadata/relations as ZIL facts and
-   rules, while keeping all theorem proofs in the existing GRH namespaces.
-5. Compare ZIL-derived dependency/claim graphs with the source declarations;
-   do not treat graph consistency as proof of the Riemann or Generalized
-   Riemann Hypothesis.
+To refresh the snapshot, choose a ZIL revision explicitly, review its Datalog
+module dependency graph and license, copy the selected modules, then rerun
+lake build Zil ZilSmoke under the pinned GRH toolchain. Do not update
+lean-toolchain merely to consume ZIL: a coordinated toolchain/Mathlib
+upgrade must be evaluated against the complete GRH proof tree.
 
-## Current status
+## Trust boundary
 
-This commit documents the incompatibility and preserves both existing pins.
-It does not yet compile ZIL inside the GRH Lake project. A source-vendored
-snapshot would need compatibility validation under Lean 4.35 before it can be
-claimed as an integrated dependency.
+The Datalog proof results apply to the ZIL programs and semantics represented
+by these modules. They do not by themselves prove the Riemann Hypothesis,
+the Generalized Riemann Hypothesis, or the correctness of any mapping from
+GRH source declarations to ZIL facts. Such a mapping needs its own
+soundness/completeness statement and machine-checked proof.

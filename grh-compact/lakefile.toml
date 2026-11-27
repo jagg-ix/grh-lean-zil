@@ -1,6 +1,6 @@
 name = "GRH"
 srcDir = "src"
-defaultTargets = ["Lib", "New", "Main"]
+defaultTargets = ["Lib", "New", "Main", "Zil", "ZilSmoke"]
 moreLeanArgs = ["--tstack=400000"]
 
 [leanOptions]
@@ -31,6 +31,14 @@ roots = ["Statements", "Main"]
 name = "Challenge"
 srcDir = ".."
 
-# ZIL integration is intentionally a separate future Lake package/overlay:
-# upstream ZIL pins Lean 4.31.0, while this GRH project pins Lean 4.35.0.
-# See ZIL-INTEGRATION.md for the compatibility boundary and pinned revision.
+# Upstream ZIL Datalog modules, vendored verbatim at the commit documented in
+# ZIL-INTEGRATION.md. The upstream package's Lean 4.31 pin differs from GRH's
+# Lean 4.35 pin, so this source-only subset avoids a nested toolchain conflict.
+[[lean_lib]]
+name = "Zil"
+roots = ["Zil"]
+
+# Compile an executable API smoke test as part of the default target set.
+[[lean_lib]]
+name = "ZilSmoke"
+roots = ["Zil.Datalog.Smoke"]
