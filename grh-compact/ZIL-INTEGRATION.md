@@ -5,9 +5,9 @@ from [jagg-ix/zil-lean](https://github.com/jagg-ix/zil-lean).
 
 ## Source and compatibility
 
-The source is pinned to ZIL commit
-7de6db8b6ce5f5c83667a3a93e05bc80649e4a06. The files under src/Zil/Datalog are copied verbatim from
-that revision; their upstream module names and imports are preserved.
+The source is pinned to ZIL commit 7de6db8b6ce5f5c83667a3a93e05bc80649e4a06. The files under
+src/Zil/Datalog are copied verbatim from that revision; their upstream module
+names and imports are preserved.
 
 The GRH compact project pins Lean 4.35.0 and Mathlib commit
 56a005855ea17e0b0958f73ec801ae140b0a1679. The ZIL repository's
@@ -27,7 +27,7 @@ This does not bring in ZIL's native knowledge/application stack, external
 .zc parser, CLI, worker, persistence, networking, or runtime services.
 Those components remain outside the integration boundary.
 
-## Build and smoke test
+## Build and test
 
 From grh-compact/:
 
@@ -36,8 +36,17 @@ lake build Zil ZilSmoke
 lake env lean src/Zil/Datalog/Smoke.lean
 ```
 
-The smoke test checks a ground fact, the checked evaluator's positive answer,
-and the zil_solve tactic against a fact program.
+The smoke suite is the upstream Zil/Test/DatalogChecked.lean test, copied
+verbatim from the pinned commit and placed at src/Zil/Datalog/Smoke.lean.
+It checks a 40-edge derivation, the difference between bounded and checked
+evaluation, insufficient-fuel errors, query evaluation, stratified negation,
+rejection of a negation cycle, and the zil_solve / zil_refute tactics.
+It also audits the selected theorem declarations against the classical
+axiom allowlist used by upstream ZIL.
+
+The workflow .github/workflows/zil-datalog.yml runs the Zil and ZilSmoke
+targets with Lean selected by grh-compact/lean-toolchain. A successful
+build result is not claimed until GitHub Actions reports it.
 
 ## Updating
 
