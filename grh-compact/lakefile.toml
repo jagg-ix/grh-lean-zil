@@ -1,6 +1,6 @@
 name = "GRH"
 srcDir = "src"
-defaultTargets = ["Lib", "New", "Main"]
+defaultTargets = ["Lib", "New", "Main", "Zil", "ZilSmoke"]
 moreLeanArgs = ["--tstack=400000"]
 
 [leanOptions]
@@ -30,3 +30,14 @@ roots = ["Statements", "Main"]
 [[lean_lib]]
 name = "Challenge"
 srcDir = ".."
+
+# ZIL's proof-oriented Datalog DSL, vendored from the pinned source revision.
+# Upstream currently pins Lean 4.31.0; this GRH project remains on Lean 4.35.0.
+[[lean_lib]]
+name = "Zil"
+roots = ["Zil"]
+
+# Compile upstream DSL, checked-evaluation, certificate and perfect-model tests.
+[[lean_lib]]
+name = "ZilSmoke"
+roots = ["Zil.Test.DatalogSuite"]
