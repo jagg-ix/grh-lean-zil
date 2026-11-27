@@ -1,0 +1,33 @@
+name: ZIL Datalog bridge
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/zil-datalog.yml"
+      - "grh-compact/lakefile.toml"
+      - "grh-compact/lean-toolchain"
+      - "grh-compact/src/Zil.lean"
+      - "grh-compact/src/Zil/Datalog/**"
+  push:
+    branches: ["main"]
+    paths:
+      - ".github/workflows/zil-datalog.yml"
+      - "grh-compact/lakefile.toml"
+      - "grh-compact/lean-toolchain"
+      - "grh-compact/src/Zil.lean"
+      - "grh-compact/src/Zil/Datalog/**"
+  workflow_dispatch:
+
+jobs:
+  build-zil-datalog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: leanprover/lean-action@v1
+        with:
+          lake-package-directory: grh-compact
+          build: false
+          use-mathlib-cache: false
+      - name: Build vendored ZIL modules and upstream checked-evaluation tests
+        working-directory: grh-compact
+        run: lake build Zil ZilSmoke
